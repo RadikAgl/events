@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:7-alpine
+  celery:
+    build: .
+    command: celery -A core worker -B -l info -c 1
+    env_file:
+      - .env
+    environment:
+      DJANGO_SETTINGS_MODULE: core.settings
+      PYTHONPATH: /app/src
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis
+    restart: unless-stopped
